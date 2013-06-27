@@ -70,6 +70,9 @@ int npaths(int steps, pto *point){
       }
    }
    
+   if( sqrt( pow((point->x-INITIAL_X),2) + pow((point->y-INITIAL_Y),2))>(steps+2)*JUMP_SIZE ) return 0;
+
+
    left=l(point);
    right=r(point);
    
