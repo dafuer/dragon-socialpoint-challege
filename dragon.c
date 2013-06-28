@@ -109,7 +109,10 @@ int main (int argc, char **argv){
    current=next;
    printf(" %f %f %d\n", current->x, current->y, normalize_angle(current->alfa));
 */   
-   printf(" Number of posible solutions: %d\n", npaths(atoi(argv[1]), current));
+   next=l(current);
+   free(current);
+   current=next;  
+   printf(" Number of posible solutions: %d\n", npaths(atoi(argv[1])-1, current)*2);
    
    return 0;
 }
