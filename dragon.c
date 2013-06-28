@@ -75,7 +75,7 @@ int npaths(int steps, pto *point){
 
    left=l(point);
    right=r(point);
-   
+   free(point);   
    return npaths(steps-1, left)+npaths(steps-1,right);
 }
    
