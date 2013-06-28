@@ -64,13 +64,18 @@ int npaths(int steps, pto *point){
    
    if(steps==0){
       if(real_equal(point->x,INITIAL_X,ERROR) && real_equal(point->y, INITIAL_Y, ERROR) && normalize_angle(INITIAL_ANGLE)==normalize_angle(point->alfa)){ // is valid solution?
-         return 1;
+         free(point);
+	 return 1;
       }else{
+         free(point);
          return 0;
       }
    }
    
-   if( sqrt( pow((point->x-INITIAL_X),2) + pow((point->y-INITIAL_Y),2))>(steps+2)*JUMP_SIZE ) return 0;
+   if( sqrt( pow((point->x-INITIAL_X),2) + pow((point->y-INITIAL_Y),2))>(steps+2)*JUMP_SIZE ){
+      free(point);
+      return 0;
+   }
 
 
    left=l(point);
