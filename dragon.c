@@ -9,12 +9,14 @@
 #define JUMP_SIZE 1
 #define ERROR 0.0001
 
+// Point model
 typedef struct {
   float x;
   float y;
-  int alfa; // en este caso no seran necesarios numeros decimales, de 72 en 72.
+  int alfa; // In this case we don't need real numbers, (72 degrees each step)
 } pto;
 
+// Return an angle between 0 and 360. 
 int normalize_angle(int beta){
    while(beta<0){
      beta=360+beta;
@@ -25,6 +27,7 @@ int normalize_angle(int beta){
    return beta;
 }
 
+// Move point to the left
 pto *l(pto *current){
    pto *next;
    
@@ -36,8 +39,9 @@ pto *l(pto *current){
    next->y=current->y+JUMP_SIZE*cos(current->alfa*M_PI/180);
    
    return next;
- }
+}
 
+// Move point to the right
 pto *r(pto *current){
    pto *next;
    
@@ -51,7 +55,8 @@ pto *r(pto *current){
    return next;
  }
  
- int real_equal(float real, float obj, float error){
+// Comparation between reals assuming a small error
+int real_equal(float real, float obj, float error){
    if(real<obj+error && real>obj-error){
       return 1;
    }else{
@@ -59,9 +64,11 @@ pto *r(pto *current){
    }
 }
 
+// Recursive function that return the number of valid paths from a point in N steps
 int npaths(int steps, pto *point){
    pto *left, *right;
    
+   // We finish this path. Check if it is a solution
    if(steps==0){
       if(real_equal(point->x,INITIAL_X,ERROR) && real_equal(point->y, INITIAL_Y, ERROR) && normalize_angle(INITIAL_ANGLE)==normalize_angle(point->alfa)){ // is valid solution?
          free(point);
@@ -72,18 +79,22 @@ int npaths(int steps, pto *point){
       }
    }
    
+   // Pruning test: check if we can walk to the origin or origin is so far (Euclidean distance)
    if( sqrt( pow((point->x-INITIAL_X),2) + pow((point->y-INITIAL_Y),2))>(steps+ERROR)*JUMP_SIZE ){
       free(point);
       return 0;
    }
 
-
+   // Next step
    left=l(point);
    right=r(point);
    free(point);   
+   
+   // The total number of solutions are solutions to the right plus solutions the left 
    return npaths(steps-1, left)+npaths(steps-1,right);
 }
    
+
 int main (int argc, char **argv){
    pto *current, *next;
 
@@ -92,28 +103,8 @@ int main (int argc, char **argv){
    current->x=INITIAL_X;
    current->y=INITIAL_Y;
    current->alfa=INITIAL_ANGLE; // Initially it is looking to nord
-/*   
-   next=l(current);
-   free(current);
-   current=next;   
-   printf(" %f %f %d\n", current->x, current->y,normalize_angle( current->alfa));
-   next=l(current);
-   free(current);
-   current=next;   
-   printf(" %f %f %d\n", current->x, current->y, normalize_angle(current->alfa));
-   next=l(current);
-   free(current);
-   current=next;   
-   printf(" %f %f %d\n", current->x, current->y, normalize_angle(current->alfa));
-   next=l(current);
-   free(current);
-   current=next;   
-   printf(" %f %f %d\n", current->x, current->y, normalize_angle(current->alfa));
-   next=l(current);
-   free(current);
-   current=next;
-   printf(" %f %f %d\n", current->x, current->y, normalize_angle(current->alfa));
-*/   
+
+   // We force the first step and then the number of solutions will be double
    next=l(current);
    free(current);
    current=next;  
